@@ -15,6 +15,7 @@ coverage/
 yalc.lock
 
 # Logging, System files, misc.
+.history
 .idea/
 .npm
 npm-debug.log

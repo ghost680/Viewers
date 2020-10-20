@@ -28,9 +28,70 @@ class StandaloneRouting extends Component {
     setServers: PropTypes.func,
   };
 
+  // 格式化数据
+  formatJson(data) {
+    const {
+      studies: {
+        studyInstanceUid,
+        patientName,
+        studyDate,
+        patientId,
+        seriesList,
+      },
+    } = data;
+    let seriesArr = [];
+    seriesList.forEach(series => {
+      let instancesArr = [];
+      seriesArr.push({
+        SeriesDescription: series.seriesDescription,
+        SeriesInstanceUID: series.seriesInstanceUid,
+        SeriesNumber: series.seriesNumber,
+        SeriesDate: '20010108',
+        SeriesTime: '120318',
+        Modality: series.modality,
+        instances: instancesArr,
+      });
+      series.instances.forEach(instance => {
+        instancesArr.push({
+          metadata: {
+            Columns: instance.columns,
+            Rows: instance.rows,
+            InstanceNumber: instance.instanceNumber,
+            AcquisitionNumber: 0,
+            PhotometricInterpretation: 'MONOCHROME2',
+            BitsAllocated: 16,
+            BitsStored: 16,
+            PixelRepresentation: 1,
+            SamplesPerPixel: 1,
+            Modality: series.modality,
+            SOPInstanceUID: instance.sopInstanceUid,
+            SeriesInstanceUID: series.seriesInstanceUid,
+            StudyInstanceUID: studyInstanceUid,
+          },
+          url: instance.url,
+        });
+      });
+    });
+
+    return {
+      studies: [
+        {
+          StudyInstanceUID: studyInstanceUid,
+          StudyDescription: '影像描述',
+          StudyDate: studyDate,
+          StudyTime: '120022',
+          PatientName: patientName,
+          PatientId: patientId,
+          series: seriesArr,
+        },
+      ],
+    };
+  }
+
   parseQueryAndRetrieveDICOMWebData(query) {
     return new Promise((resolve, reject) => {
-      const url = query.url;
+      const { exam_uid, study_id } = query;
+      const url = `${query.url}&exam_uid=${exam_uid}&study_id=${study_id}`;
 
       if (!url) {
         return reject(new Error('No URL was specified. Use ?url=$yourURL'));
@@ -88,7 +149,11 @@ class StandaloneRouting extends Component {
           let StudyInstanceUID;
           let SeriesInstanceUID;
 
-          data.studies.forEach(study => {
+          // 在这里过滤数据
+          const { data: res } = data;
+          const result = this.formatJson(res);
+
+          result.studies.forEach(study => {
             StudyInstanceUID = study.StudyInstanceUID;
 
             study.series.forEach(series => {
@@ -109,7 +174,7 @@ class StandaloneRouting extends Component {
             });
           });
 
-          resolve({ studies: data.studies, studyInstanceUIDs: [] });
+          resolve({ studies: result.studies, studyInstanceUIDs: [] });
         }
       });
 

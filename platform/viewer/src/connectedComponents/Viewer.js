@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import OHIF, { MODULE_TYPES, DICOMSR } from '@ohif/core';
 import { withDialog } from '@ohif/ui';
 import moment from 'moment';
-import ConnectedHeader from './ConnectedHeader.js';
+// import ConnectedHeader from './ConnectedHeader.js';
 import ToolbarRow from './ToolbarRow.js';
 import ConnectedStudyBrowser from './ConnectedStudyBrowser.js';
 import ConnectedViewerMain from './ConnectedViewerMain.js';
@@ -230,8 +230,8 @@ class Viewer extends Component {
 
     return (
       <>
-        {/* HEADER */}
-        <WhiteLabelingContext.Consumer>
+        {/* header */}
+        {/* <WhiteLabelingContext.Consumer>
           {whiteLabeling => (
             <UserManagerContext.Consumer>
               {userManager => (
@@ -257,7 +257,7 @@ class Viewer extends Component {
               )}
             </UserManagerContext.Consumer>
           )}
-        </WhiteLabelingContext.Consumer>
+        </WhiteLabelingContext.Consumer> */}
 
         {/* TOOLBAR */}
         <ErrorBoundaryDialog context="ToolbarRow">

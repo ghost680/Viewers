@@ -37,6 +37,9 @@ class StandaloneRouting extends Component {
         studyDate,
         patientId,
         seriesList,
+        patientAge,
+        patientSex,
+        institution,
       },
     } = data;
     let seriesArr = [];
@@ -54,6 +57,23 @@ class StandaloneRouting extends Component {
       series.instances.forEach(instance => {
         instancesArr.push({
           metadata: {
+            patientModule: {
+              patientId: patientId,
+              patientName: patientName,
+              patientAge: patientAge,
+              patientSex: patientSex,
+            },
+            generalStudyModule: {
+              studyDescription: institution,
+              studyDate: studyDate,
+            },
+            generalSeriesModule: {
+              seriesDescription: series.seriesDescription,
+              seriesNumber: series.seriesNumber,
+            },
+            generalImageModule: {
+              instanceNumber: instance.instanceNumber ? instance.instanceNumber : '#',
+            },
             Columns: instance.columns,
             Rows: instance.rows,
             InstanceNumber: instance.instanceNumber,
